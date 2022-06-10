@@ -60,7 +60,7 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Build completed, git tag ${{ env.TAG }} created. 
+          status: Build ${{ env.TAG }} completed, git tag created. 
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -75,7 +75,7 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Build completed, git tag ${{ env.TAG }} is NOT created 
+          status: Build ${{ env.TAG }} completed, git tag job failed. 
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
