@@ -33,13 +33,12 @@ jobs:
       - name: Notify Slack of GH Tag
         id: gh-tag-slack
         uses: voxmedia/github-action-slack-notify-build@v1
-        uses: SwipeStoxGmbH/reusable-workflows/actions/deploy@master
         with:
           NAMESPACE: ${{ inputs.NAMESPACE }}
           KUSTOMIZE_OVERLAY: ${{ inputs.KUSTOMIZE_OVERLAY }}
         with:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
-          status: Deploying image ${{ env.TAG }} on DEV
+          status: Adding ${{ env.TAG }} tag on git
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -62,7 +61,7 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.gh-tag-slack.outputs.slack_message_id }}
-          status: Building ${{ needs.gh-tag-slack.outputs.TAG }} successful
+          status: Build completed, git tag ${{ env.TAG }} created. 
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -77,7 +76,7 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.gh-tag-slack.outputs.slack_message_id }}
-          status: Building ${{ needs.gh-tag-slack.outputs.TAG }} faile
+          status: Build completed, git tag ${{ env.TAG }} is NOT created 
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
