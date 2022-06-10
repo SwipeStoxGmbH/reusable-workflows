@@ -32,10 +32,7 @@ jobs:
           echo "TAG=${GITHUB_REF##*/}-`echo ${GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@v2.4.2
-        with:
-          token: ${{ secrets.gh-token }}
-          fetch-depth: 2
+        uses: actions/checkout@v1
  
       - name: Notify Slack of GH Tag
         id: gh-tag-slack
@@ -52,6 +49,7 @@ jobs:
         with:
           tag: ${{ env.TAG }}
           message: ${{ env.TAG }}
+          github_token: ${{ secrets.gh-token }}
 
   slack_report_success:
     runs-on: small-runner
