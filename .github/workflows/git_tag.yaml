@@ -4,10 +4,14 @@ on:
   workflow_call:
 
     inputs:
-      SLACK_DEV_DEPLOY_CHANNEL_ID:
+      SLACK_BUILD_CHANNEL_ID:
         type: string
         required: true
-        description: '#gh-deploy-dev ID'
+        description: '#gh-build - ID'
+      SLACK_BUILD_MESSAGE_ID:
+        type: string
+        required: true
+        description: '#gh-build - Message ID'
     secrets:
       slack-bot-token:
         required: true
@@ -34,10 +38,8 @@ jobs:
         id: gh-tag-slack
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
-          NAMESPACE: ${{ inputs.NAMESPACE }}
-          KUSTOMIZE_OVERLAY: ${{ inputs.KUSTOMIZE_OVERLAY }}
-        with:
-          channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
+          channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
+          message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: Adding ${{ env.TAG }} tag on git
           color: 0037FF
         env:
@@ -59,8 +61,8 @@ jobs:
       - name: Notify Slack of Success
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
-          channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
-          message_id: ${{ needs.gh-tag-slack.outputs.slack_message_id }}
+          channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
+          message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: Build completed, git tag ${{ env.TAG }} created. 
           color: good
         env:
@@ -74,8 +76,8 @@ jobs:
       - name: Notify Slack of Failure
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
-          channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
-          message_id: ${{ needs.gh-tag-slack.outputs.slack_message_id }}
+          channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
+          message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: Build completed, git tag ${{ env.TAG }} is NOT created 
           color: danger
         env:
