@@ -52,8 +52,8 @@ jobs:
             message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
             status: Starting image ${{ env.TAG }} build
             color: 0037FF
-          env:
-            SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
+            env:
+              SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
           attempt_limit: 3
           attempt_delay: 2000
 
