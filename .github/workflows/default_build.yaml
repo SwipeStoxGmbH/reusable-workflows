@@ -96,8 +96,7 @@ jobs:
             context: .
             file: ./Dockerfile
             push: true
-            tags: |
-              ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPO }}:${{ env.TAG }}
+            tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPO }}:${{ env.TAG }}
           attempt_limit: 3
           attempt_delay: 2000
 
