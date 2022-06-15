@@ -44,14 +44,18 @@ jobs:
 
       - name: Notify Slack of Build
         id: gh-build
-        uses: voxmedia/github-action-slack-notify-build@v1
+        uses: Wandalen/wretry.action@v1.0.11
         with:
-          channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
-          message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Starting image ${{ env.TAG }} build
-          color: 0037FF
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
+          action: voxmedia/github-action-slack-notify-build@v1
+          with: |
+            channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
+            message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
+            status: Starting image ${{ env.TAG }} build
+            color: 0037FF
+          env:
+            SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
+          attempt_limit: 3
+          attempt_delay: 2000
 
       - name: Checkout
         uses: actions/checkout@v1
