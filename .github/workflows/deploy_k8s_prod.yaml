@@ -70,7 +70,12 @@ jobs:
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel_id: ${{ inputs.SLACK_PROD_DEPLOY_CHANNEL_ID }}
-          status: Deploying image ${{ inputs.IMAGE_TAG }} on PROD
+          status: |
+            Deploying Image on Production
+
+            - Image Tag: ${{ env.TAG }}
+            - Actor: ${{ env.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -125,8 +130,10 @@ jobs:
           message_id: ${{ needs.deploy_production.outputs.slack_message_id }}
           status: |
             Image Deployed on Production
-            Image Tag: ${{ needs.deploy_production.outputs.TAG }}
-            Actor: ${{ needs.deploy_production.outputs.GITHUB_ACTOR }}
+
+            - Image Tag: ${{ needs.deploy_production.outputs.TAG }}
+            - Actor: ${{ needs.deploy_production.outputs.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -142,9 +149,11 @@ jobs:
           channel_id: ${{ inputs.SLACK_PROD_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.deploy_production.outputs.slack_message_id }}
           status: |
-            Image Production Deployment Failed 
-            Image Tag: ${{ needs.deploy_production.outputs.TAG }}
-            Actor: ${{ needs.deploy_production.outputs.GITHUB_ACTOR }}
+            Image Production Deployment Failed
+
+            - Image Tag: ${{ needs.deploy_production.outputs.TAG }}
+            - Actor: ${{ needs.deploy_production.outputs.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}

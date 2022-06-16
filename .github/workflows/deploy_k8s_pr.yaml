@@ -65,8 +65,10 @@ jobs:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           status: |
             Deploying PR Image on DEV
-            Image Tag: ${{ env.TAG }}
-            Actor: ${{ env.GITHUB_ACTOR }}
+
+            - Image Tag: ${{ env.TAG }}
+            - Actor: ${{ env.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -135,9 +137,11 @@ jobs:
           message_id: ${{ needs.deploy_pr.outputs.SLACK_MESSAGE_ID }}
           status: |
             PR Deployed on DEV
-            PR URL: https://${{ needs.deploy_pr.outputs.TAG }}.${{ inputs.DOMAIN_INT }}
-            Image Tag: ${{ needs.deploy_pr.outputs.TAG }}
-            Actor: ${{ needs.deploy_pr.outputs.GITHUB_ACTOR }}
+
+            - Image Tag: ${{ needs.deploy_pr.outputs.TAG }}
+            - Actor: ${{ needs.deploy_pr.outputs.GITHUB_ACTOR }}
+            - PR URL: https://${{ needs.deploy_pr.outputs.TAG }}.${{ inputs.DOMAIN_INT }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -154,8 +158,10 @@ jobs:
           message_id: ${{ needs.deploy_pr.outputs.SLACK_MESSAGE_ID }}
           status: |
             PR Deployment Failed 
-            Image Tag: ${{ needs.deploy_pr.outputs.TAG }}
-            Actor: ${{ needs.deploy_pr.outputs.GITHUB_ACTOR }}
+
+            - Image Tag: ${{ needs.deploy_pr.outputs.TAG }}
+            - Actor: ${{ needs.deploy_pr.outputs.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 

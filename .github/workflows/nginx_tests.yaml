@@ -57,7 +57,9 @@ jobs:
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
             Testing NGINX Config
-            Actor: ${{ env.GITHUB_ACTOR }}
+
+            - Actor: ${{ env.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -96,7 +98,9 @@ jobs:
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
             NGINX Test Passed
-            Actor: ${{ env.GITHUB_ACTOR }}
+
+            - Actor: ${{ env.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -113,7 +117,9 @@ jobs:
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
             NGINX Test Failed
-            Actor: ${{ env.GITHUB_ACTOR }}
+
+            - Actor: ${{ env.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}

@@ -61,8 +61,10 @@ jobs:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           status: |
             Deploying Image on DEV
-            Image Tag: ${{ env.TAG }}
-            Actor: ${{ env.GITHUB_ACTOR }}
+
+            - Image Tag: ${{ env.TAG }}
+            - Actor: ${{ env.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -118,8 +120,10 @@ jobs:
           message_id: ${{ needs.deploy_dev.outputs.slack_message_id }}
           status: |
             Image Deployed on DEV
-            Image Tag: ${{ needs.deploy_dev.outputs.TAG }}
-            Actor: ${{ needs.deploy_dev.outputs.GITHUB_ACTOR }}
+
+            - Image Tag: ${{ needs.deploy_dev.outputs.TAG }}
+            - Actor: ${{ needs.deploy_dev.outputs.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -135,9 +139,11 @@ jobs:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.deploy_dev.outputs.slack_message_id }}
           status: |
-            Image DEV Deployment Failed 
-            Image Tag: ${{ needs.deploy_dev.outputs.TAG }}
-            Actor: ${{ needs.deploy_dev.outputs.GITHUB_ACTOR }}
+            Image DEV Deployment Failed
+
+            - Image Tag: ${{ needs.deploy_dev.outputs.TAG }}
+            - Actor: ${{ needs.deploy_dev.outputs.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 

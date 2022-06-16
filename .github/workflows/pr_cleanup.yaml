@@ -64,8 +64,10 @@ jobs:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           status: |
             PR ${{ env.TAG }} closed. Recycling...
-            Image Tag: ${{ env.TAG }}
-            Actor: ${{ env.GITHUB_ACTOR }}
+
+            - Image Tag: ${{ env.TAG }}
+            - Actor: ${{ env.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: warning
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -120,9 +122,11 @@ jobs:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.pr_cleanup.outputs.SLACK_MESSAGE_ID }}
           status: |
-            PR ${{ needs.pr_cleanup.outputs.TAG }} closed and recycled.   
-            Image Tag: ${{ needs.pr_cleanup.outputs.TAG }}
-            Actor: ${{ needs.pr_cleanup.outputs.GITHUB_ACTOR }}
+            PR ${{ needs.pr_cleanup.outputs.TAG }} closed and recycled
+
+            - Image Tag: ${{ needs.pr_cleanup.outputs.TAG }}
+            - Actor: ${{ needs.pr_cleanup.outputs.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -138,9 +142,11 @@ jobs:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.pr_cleanup.outputs.SLACK_MESSAGE_ID }}
           status: |
-            PR ${{ needs.pr_cleanup.outputs.TAG }} closed. Recycling failed!   
-            Image Tag: ${{ needs.pr_cleanup.outputs.TAG }}
-            Actor: ${{ needs.pr_cleanup.outputs.GITHUB_ACTOR }}
+            PR ${{ needs.pr_cleanup.outputs.TAG }} closed. Recycling failed
+
+            - Image Tag: ${{ needs.pr_cleanup.outputs.TAG }}
+            - Actor: ${{ needs.pr_cleanup.outputs.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
