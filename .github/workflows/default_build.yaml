@@ -53,9 +53,10 @@ jobs:
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
             Starting Image Build
-            Image Tag: ${{ env.TAG }}
-            Actor: ${{ env.GITHUB_ACTOR }}
-            Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            - Image Tag: ${{ env.TAG }}
+            - Actor: ${{ env.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -118,10 +119,11 @@ jobs:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
-            Image Build Completed    
-            Image Tag: ${{ needs.default_build.outputs.TAG }}
-            Actor: ${{ needs.default_build.outputs.GITHUB_ACTOR }}
-            Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Image Build Completed
+
+            - Image Tag: ${{ needs.default_build.outputs.TAG }}
+            - Actor: ${{ needs.default_build.outputs.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -137,10 +139,11 @@ jobs:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
-            Image Build Failed    
-            Image Tag: ${{ needs.default_build.outputs.TAG }}
-            Actor: ${{ needs.default_build.outputs.GITHUB_ACTOR }}
-            Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Image Build Failed 
+
+            - Image Tag: ${{ needs.default_build.outputs.TAG }}
+            - Actor: ${{ needs.default_build.outputs.GITHUB_ACTOR }}
+            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
