@@ -35,16 +35,14 @@ jobs:
     runs-on: small-runner
     outputs:
       TAG: ${{ env.TAG }}
+      ACTOR: ${{ env.ACTOR }}
     steps:
       - name: Set environment variables
         run: |
           echo "SHORT_COMMIT=`echo ${GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
           echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
           echo "TAG=${GITHUB_REF##*/}-`echo ${GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
-          echo "ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
-
-      - name: GitHub Environment Variables Action
-        uses: FranzDiebold/github-env-vars-action@v2.3.1
+          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
 
       - name: Notify Slack of Build
         id: gh-build
@@ -52,7 +50,7 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Starting image ${{ env.TAG }} build - ${{ env.ACTOR }}
+          status: Starting image ${{ env.TAG }} build \n ${{ env.ACTOR }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -114,7 +112,7 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Image ${{ needs.default_build.outputs.TAG }} build completed - [ ${{ env.ACTOR }} ]
+          status: Image ${{ needs.default_build.outputs.TAG }} build completed \n [ ${{ needs.default_build.outputs.ACTOR }} ]
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -129,7 +127,7 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Image ${{ needs.default_build.outputs.TAG }} build failed - [ ${{ env.ACTOR }} ]
+          status: Image ${{ needs.default_build.outputs.TAG }} build failed \n [ ${{ needs.default_build.outputs.ACTOR }} ]
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
