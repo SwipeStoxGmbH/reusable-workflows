@@ -36,7 +36,7 @@ jobs:
     outputs:
       TAG: ${{ env.TAG }}
       GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-      
+
     steps:
       - name: Set environment variables
         run: |
@@ -55,6 +55,7 @@ jobs:
             Starting Image Build
             Image Tag: ${{ env.TAG }}
             Actor: ${{ env.GITHUB_ACTOR }}
+            Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -120,6 +121,7 @@ jobs:
             Image Build Completed    
             Image Tag: ${{ needs.default_build.outputs.TAG }}
             Actor: ${{ needs.default_build.outputs.GITHUB_ACTOR }}
+            Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -138,6 +140,7 @@ jobs:
             Image Build Failed    
             Image Tag: ${{ needs.default_build.outputs.TAG }}
             Actor: ${{ needs.default_build.outputs.GITHUB_ACTOR }}
+            Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
