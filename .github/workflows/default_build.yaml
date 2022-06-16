@@ -50,7 +50,9 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Starting image ${{ env.TAG }} build \n ${{ env.GITHUB_ACTOR }}
+          status: |
+            Starting image ${{ env.TAG }} build 
+            by ${{ env.GITHUB_ACTOR }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -112,7 +114,9 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Image ${{ needs.default_build.outputs.TAG }} build completed \n [ ${{ needs.default_build.outputs.GITHUB_ACTOR }} ]
+          status: |
+            Image ${{ needs.default_build.outputs.TAG }} build completed 
+            by [ ${{ needs.default_build.outputs.GITHUB_ACTOR }} ]
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -127,7 +131,9 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Image ${{ needs.default_build.outputs.TAG }} build failed \n [ ${{ needs.default_build.outputs.GITHUB_ACTOR }} ]
+          status: |
+            Image ${{ needs.default_build.outputs.TAG }} build failed
+            by [ ${{ needs.default_build.outputs.GITHUB_ACTOR }} ]
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
