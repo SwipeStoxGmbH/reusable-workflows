@@ -69,7 +69,7 @@ jobs:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
-             Git Tag Added, Build Succesfull
+            Build Succesfull, Git Tag Added
 
             - Image Tag: ${{ needs.git_tag.outputs.TAG }}
             - Actor: ${{ needs.git_tag.outputs.GITHUB_ACTOR }}
@@ -89,7 +89,7 @@ jobs:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
-            Git Tag Failed, Build Succesfull
+            Build Succesfull but Git Tag Failed
 
             - Image Tag: ${{ needs.git_tag.outputs.TAG }}
             - Actor: ${{ needs.git_tag.outputs.GITHUB_ACTOR }}
