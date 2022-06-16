@@ -47,8 +47,9 @@ jobs:
     runs-on: small-prod-runner
     outputs:
       SLACK_MESSAGE_ID: ${{ steps.gh-deploy-prod.outputs.message_id }}
-    steps:
+      GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
 
+    steps:
       - name: Check image tag 
         run: | 
           if [[ ! ${{ inputs.IMAGE_TAG }} =~ ^[a-z]+[-] ]] ; then 
@@ -62,6 +63,7 @@ jobs:
         run: |
           TAG=${{ inputs.IMAGE_TAG }}
           echo "TAG=${{ inputs.IMAGE_TAG }}" >> $GITHUB_ENV 
+          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
 
       - name: Notify Slack of Production Deploy
         id: gh-deploy-prod
@@ -121,7 +123,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_PROD_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.deploy_production.outputs.slack_message_id }}
-          status: Image ${{ inputs.IMAGE_TAG }} deployed on PROD
+          status: |
+            Image Deployed on Production
+            Image Tag: ${{ needs.deploy_production.outputs.TAG }}
+            Actor: ${{ needs.deploy_production.outputs.GITHUB_ACTOR }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -136,7 +141,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_PROD_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.deploy_production.outputs.slack_message_id }}
-          status: Image ${{ inputs.IMAGE_TAG }} PROD deployment failed
+          status: |
+            Image Production Deployment Failed 
+            Image Tag: ${{ needs.deploy_production.outputs.TAG }}
+            Actor: ${{ needs.deploy_production.outputs.GITHUB_ACTOR }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}

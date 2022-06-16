@@ -40,39 +40,49 @@ on:
 jobs:
   nginx_test:
     runs-on: small-runner
+    outputs:
+      GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+      
     steps:
-    - name: Notify Slack of Test
-      id: gh-build
-      uses: voxmedia/github-action-slack-notify-build@v1
-      with:
-        channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
-        message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-        status: Testing NGINX Config
-        color: 0037FF
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
+      - name: Set environment variables
+        id: envs 
+        run: |
+          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
 
-    - name: Checkout
-      uses: actions/checkout@v1
+      - name: Notify Slack of Test
+        id: gh-build
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
+          message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
+          status: |
+            Testing NGINX Config
+            Actor: ${{ env.GITHUB_ACTOR }}
+          color: 0037FF
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
 
-    - name: Create Config Files
-      shell:  bash {0}
-      run: |
-        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-        sudo chmod a+x /usr/local/bin/yq
+      - name: Checkout
+        uses: actions/checkout@v1
 
-        NGINX_CONFIG_FILE_PATH_ARRAY=${{ inputs.NGINX_CONFIG_FILES_PATH }}
-        NGINX_CONFIG_FILE_EXPORT_ARRAY=${{ inputs.NGINX_CONFIG_FILES_EXPORT }}
+      - name: Create Config Files
+        shell:  bash {0}
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
 
-        for i in "${!NGINX_CONFIG_FILE_PATH_ARRAY[@]}"; do
-          yq -e '.data."nginx.conf"' ${NGINX_CONFIG_FILE_PATH_ARRAY[i]} > ${NGINX_CONFIG_FILE_EXPORT_ARRAY[i]}
-        done
+          NGINX_CONFIG_FILE_PATH_ARRAY=${{ inputs.NGINX_CONFIG_FILES_PATH }}
+          NGINX_CONFIG_FILE_EXPORT_ARRAY=${{ inputs.NGINX_CONFIG_FILES_EXPORT }}
 
-    - name: Running Tests
-      uses: SwipeStoxGmbH/reusable-workflows/actions/nginx-test@master
-      with:
-        NGINX_CONFIG_FILES_EXPORT: ${{ inputs.NGINX_CONFIG_FILES_EXPORT }}
-        NGINX_IMAGE: ${{ inputs.NGINX_IMAGE }}
+          for i in "${!NGINX_CONFIG_FILE_PATH_ARRAY[@]}"; do
+            yq -e '.data."nginx.conf"' ${NGINX_CONFIG_FILE_PATH_ARRAY[i]} > ${NGINX_CONFIG_FILE_EXPORT_ARRAY[i]}
+          done
+
+      - name: Running Tests
+        uses: SwipeStoxGmbH/reusable-workflows/actions/nginx-test@master
+        with:
+          NGINX_CONFIG_FILES_EXPORT: ${{ inputs.NGINX_CONFIG_FILES_EXPORT }}
+          NGINX_IMAGE: ${{ inputs.NGINX_IMAGE }}
 
   report_success:
     runs-on: small-runner
@@ -84,7 +94,9 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: NGINX test passed
+          status: |
+            NGINX Test Passed
+            Actor: ${{ env.GITHUB_ACTOR }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -99,7 +111,9 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: NGINX test failed
+          status: |
+            NGINX Test Failed
+            Actor: ${{ env.GITHUB_ACTOR }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}

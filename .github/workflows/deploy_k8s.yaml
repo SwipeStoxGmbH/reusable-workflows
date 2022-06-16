@@ -44,19 +44,25 @@ jobs:
     outputs:
       SLACK_MESSAGE_ID: ${{ steps.gh-deploy-dev.outputs.message_id }}
       TAG: ${{ env.TAG }}
+      GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+      
     steps:
-      - name: Extract TAG
+      - name: Set environment variables
         id: envs 
         run: |
           TAG=${GITHUB_REF##*/}-`echo ${GITHUB_SHA} | cut -c1-7`
           echo "TAG=${GITHUB_REF##*/}-`echo ${GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
+          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
 
       - name: Notify Slack of Deploy
         id: gh-deploy-dev
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
-          status: Deploying image ${{ env.TAG }} on DEV
+          status: |
+            Deploying Image on DEV
+            Image Tag: ${{ env.TAG }}
+            Actor: ${{ env.GITHUB_ACTOR }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -110,7 +116,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.deploy_dev.outputs.slack_message_id }}
-          status: Image ${{ needs.deploy_dev.outputs.TAG }} deployed on DEV
+          status: |
+            Image Deployed on DEV
+            Image Tag: ${{ needs.deploy_dev.outputs.TAG }}
+            Actor: ${{ needs.deploy_dev.outputs.GITHUB_ACTOR }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -125,7 +134,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.deploy_dev.outputs.slack_message_id }}
-          status: Image ${{ needs.deploy_dev.outputs.TAG }} DEV deployment failed
+          status: |
+            Image DEV Deployment Failed 
+            Image Tag: ${{ needs.deploy_dev.outputs.TAG }}
+            Actor: ${{ needs.deploy_dev.outputs.GITHUB_ACTOR }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 

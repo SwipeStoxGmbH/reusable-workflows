@@ -34,12 +34,15 @@ jobs:
   pr_build:
     runs-on: small-runner
     outputs:
-      PR_TAG: ${{ env.PR_TAG }}
+      TAG: ${{ env.TAG }}
+      GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+      
     steps:
       - name: Set environment variables
         run: |
           echo "SHORT_COMMIT=`echo ${{ github.event.pull_request.head.sha }} | cut -c1-7`" >> $GITHUB_ENV
-          echo "PR_TAG=pr-`echo ${{ github.event.pull_request.head.sha }} | cut -c1-7`" >> $GITHUB_ENV
+          echo "TAG=pr-`echo ${{ github.event.pull_request.head.sha }} | cut -c1-7`" >> $GITHUB_ENV
+          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
  
       - name: Notify Slack of Build
         id: gh-build
@@ -47,7 +50,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Starting PR image ${{ env.TAG }} build
+          status: |
+            Starting PR Image Build
+            Image Tag: ${{ env.TAG }}
+            Actor: ${{ env.GITHUB_ACTOR }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -94,7 +100,7 @@ jobs:
           # cache-from: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_CACHE_REPO }}:buildcache
           # cache-to: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_CACHE_REPO }}:buildcache,mode=max
           TAGs: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPO }}:${{ env.PR_TAG }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPO }}:${{ env.TAG }}
 
   slack_report_success:
     runs-on: small-runner
@@ -106,7 +112,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: PR image ${{ needs.pr_build.outputs.PR_TAG }} build completed
+          status: |
+            PR Image Build Completed    
+            Image Tag: ${{ needs.pr_build.outputs.TAG }}
+            Actor: ${{ needs.pr_build.outputs.GITHUB_ACTOR }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -121,7 +130,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: PR image ${{ needs.pr_build.outputs.PR_TAG }} build failed
+          status: |
+            PR Image Build Failed    
+            Image Tag: ${{ needs.pr_build.outputs.TAG }}
+            Actor: ${{ needs.pr_build.outputs.GITHUB_ACTOR }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}

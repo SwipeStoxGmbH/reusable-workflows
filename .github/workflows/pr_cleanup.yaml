@@ -46,20 +46,26 @@ jobs:
   pr_cleanup:
     runs-on: small-runner
     outputs:
-      PR_TAG: ${{ env.PR_TAG }}
+      TAG: ${{ env.TAG }}
       SLACK_MESSAGE_ID: ${{ steps.gh-cleanup-dev.outputs.message_id }}
+      GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+      
     steps:
       - name: Set environment variables
         run: |
-          PR_TAG=pr-`echo ${{ github.event.pull_request.head.sha }} | cut -c1-7`
-          echo "PR_TAG=pr-`echo ${{ github.event.pull_request.head.sha }} | cut -c1-7`" >> $GITHUB_ENV
+          TAG=pr-`echo ${{ github.event.pull_request.head.sha }} | cut -c1-7`
+          echo "TAG=pr-`echo ${{ github.event.pull_request.head.sha }} | cut -c1-7`" >> $GITHUB_ENV
+          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
 
       - name: Notify Slack of Cleanup
         id: gh-cleanup-dev
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
-          status: PR ${{ env.PR_TAG }} closed. Recycling...
+          status: |
+            PR ${{ env.TAG }} closed. Recycling...
+            Image Tag: ${{ env.TAG }}
+            Actor: ${{ env.GITHUB_ACTOR }}
           color: warning
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -71,7 +77,7 @@ jobs:
           aws_secret_access_key: ${{ secrets.aws-secret-access-key }}
           aws_route53_hosted_zone_id: ${{ inputs.HOSTED_ZONE_ID_INT }}
           aws_route53_rr_action: "DELETE"
-          aws_route53_rr_name: ${{ env.PR_TAG }}.int.sxdev.io
+          aws_route53_rr_name: ${{ env.TAG }}.int.sxdev.io
           aws_route53_rr_type: "CNAME"
           aws_route53_rr_ttl: "300"
           aws_route53_rr_value: "${{ inputs.INT_SXDEVIO_ELB }}"
@@ -95,7 +101,7 @@ jobs:
             mv /tmp/envsubst $FILE || exit 1
           done
         env:
-          PATTERN: $PR_TAG 
+          PATTERN: $TAG 
 
       - name: Delete PR from cluster
         uses: SwipeStoxGmbH/reusable-workflows/actions/delete@master
@@ -113,7 +119,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.pr_cleanup.outputs.SLACK_MESSAGE_ID }}
-          status: PR ${{ needs.pr_cleanup.outputs.PR_TAG }} closed and recycled.
+          status: |
+            PR ${{ needs.pr_cleanup.outputs.TAG }} closed and recycled.   
+            Image Tag: ${{ needs.pr_cleanup.outputs.TAG }}
+            Actor: ${{ needs.pr_cleanup.outputs.GITHUB_ACTOR }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -128,7 +137,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_DEV_DEPLOY_CHANNEL_ID }}
           message_id: ${{ needs.pr_cleanup.outputs.SLACK_MESSAGE_ID }}
-          status: PR ${{ needs.pr_cleanup.outputs.PR_TAG }} closed. Recycling failed!
+          status: |
+            PR ${{ needs.pr_cleanup.outputs.TAG }} closed. Recycling failed!   
+            Image Tag: ${{ needs.pr_cleanup.outputs.TAG }}
+            Actor: ${{ needs.pr_cleanup.outputs.GITHUB_ACTOR }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 

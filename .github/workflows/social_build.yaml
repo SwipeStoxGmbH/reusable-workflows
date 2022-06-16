@@ -39,19 +39,19 @@ on:
         required: true
         
 jobs:
-  slack_notify:
-    runs-on: small-runner
-    steps:
   social_build:
     runs-on: small-runner
     outputs:
       TAG: ${{ env.TAG }}
+      GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+      
     steps:
       - name: Set environment variables
         run: |
           echo "SHORT_COMMIT=`echo ${GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
           echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
           echo "TAG=${GITHUB_REF##*/}-`echo ${GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
+          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
 
       - name: Notify Slack of Build
         id: gh-build
@@ -59,7 +59,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Starting image ${{ env.TAG }} build
+          status: |
+            Starting Image Build
+            Image Tag: ${{ env.TAG }}
+            Actor: ${{ env.GITHUB_ACTOR }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -147,7 +150,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Image ${{ needs.social_build.outputs.TAG }} build completed
+          status: |
+            Image Build Completed 
+            Image Tag: ${{ needs.social_build.outputs.TAG }}
+            Actor: ${{ needs.social_build.outputs.GITHUB_ACTOR }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -162,7 +168,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Image ${{ needs.social_build.outputs.TAG }} build failed
+          status: |
+            Image Build Failed   
+            Image Tag: ${{ needs.social_build.outputs.TAG }}
+            Actor: ${{ needs.social_build.outputs.GITHUB_ACTOR }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 

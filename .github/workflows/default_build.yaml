@@ -35,7 +35,8 @@ jobs:
     runs-on: small-runner
     outputs:
       TAG: ${{ env.TAG }}
-      ACTOR: ${{ env.ACTOR }}
+      GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+      
     steps:
       - name: Set environment variables
         run: |
@@ -51,8 +52,9 @@ jobs:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
-            Starting image ${{ env.TAG }} build 
-            by ${{ env.GITHUB_ACTOR }}
+            Starting Image Build
+            Image Tag: ${{ env.TAG }}
+            Actor: ${{ env.GITHUB_ACTOR }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -115,8 +117,9 @@ jobs:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
-            Image ${{ needs.default_build.outputs.TAG }} build completed 
-            by [ ${{ needs.default_build.outputs.GITHUB_ACTOR }} ]
+            Image Build Completed    
+            Image Tag: ${{ needs.default_build.outputs.TAG }}
+            Actor: ${{ needs.default_build.outputs.GITHUB_ACTOR }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -132,8 +135,9 @@ jobs:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
           status: |
-            Image ${{ needs.default_build.outputs.TAG }} build failed
-            by [ ${{ needs.default_build.outputs.GITHUB_ACTOR }} ]
+            Image Build Failed    
+            Image Tag: ${{ needs.default_build.outputs.TAG }}
+            Actor: ${{ needs.default_build.outputs.GITHUB_ACTOR }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 

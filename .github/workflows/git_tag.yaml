@@ -24,12 +24,15 @@ jobs:
     outputs:
       SLACK_MESSAGE_ID: ${{ steps.gh-tag-slack.outputs.message_id }}
       TAG: ${{ env.TAG }}
+      GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+      
     steps:
-      - name: Extract TAG
+      - name: Set environment variables
         id: envs 
         run: |
           TAG=${GITHUB_REF##*/}-`echo ${GITHUB_SHA} | cut -c1-7`
           echo "TAG=${GITHUB_REF##*/}-`echo ${GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
+          echo "GITHUB_ACTOR=${GITHUB_ACTOR}" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v1
@@ -40,7 +43,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Adding ${{ env.TAG }} tag on git
+          status: |
+            Adding Image Tag on Git
+            Image Tag: ${{ env.TAG }}
+            Actor: ${{ env.GITHUB_ACTOR }}
           color: 0037FF
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
@@ -60,7 +66,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Build ${{ needs.git_tag.outputs.TAG  }} completed, git tag created. 
+          status: |
+            Build Completed, Image Tag Added to Git
+            Image Tag: ${{ needs.git_tag.outputs.TAG }}
+            Actor: ${{ needs.git_tag.outputs.GITHUB_ACTOR }}
           color: good
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
@@ -75,7 +84,10 @@ jobs:
         with:
           channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
           message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: Build ${{ needs.git_tag.outputs.TAG  }} completed, git tag job failed. 
+          status: |
+            Build Completed, Image Tag NOT Added to Git
+            Image Tag: ${{ needs.git_tag.outputs.TAG }}
+            Actor: ${{ needs.git_tag.outputs.GITHUB_ACTOR }}
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
