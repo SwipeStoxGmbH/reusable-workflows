@@ -60,19 +60,39 @@ jobs:
 
       - name: Notify Slack of Build
         id: gh-build
-        uses: voxmedia/github-action-slack-notify-build@v1
+        uses: Wandalen/wretry.action@v1.0.25
         with:
-          channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
-          message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
-          status: |
-            Starting Image Build
+          action: voxmedia/github-action-slack-notify-build@v1
+          with: |
+            channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
+            message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
+            status: |
+              Starting Image Build
 
-            - Image Tag: ${{ env.TAG }}
-            - Actor: ${{ env.GITHUB_ACTOR }}
-            - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          color: 0037FF
+              - Image Tag: ${{ env.TAG }}
+              - Actor: ${{ env.GITHUB_ACTOR }}
+              - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            color: 0037FF
+          attempt_limit: 3
+          attempt_delay: 2000
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
+
+      # - name: Notify Slack of Build
+      #   id: gh-build
+      #   uses: voxmedia/github-action-slack-notify-build@v1
+      #   with:
+      #     channel_id: ${{ inputs.SLACK_BUILD_CHANNEL_ID }}
+      #     message_id: ${{ inputs.SLACK_BUILD_MESSAGE_ID }}
+      #     status: |
+      #       Starting Image Build
+
+      #       - Image Tag: ${{ env.TAG }}
+      #       - Actor: ${{ env.GITHUB_ACTOR }}
+      #       - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      #     color: 0037FF
+      #   env:
+      #     SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
 
       - name: Checkout
         uses: actions/checkout@v1
@@ -169,7 +189,7 @@ jobs:
     - name: Upload GitHub Action workflows logs to elastic
       uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
       with:
-        github_token: "${{ secrets.gh-token-repo-full }}"
+        github_token: "${{ secrets.gh-token-repo-full }}"3
         github_org: "${{ github.repository_owner }}"
         github_repository: "${{ github.event.repository.name }}"
         github_run_id: "${{ github.run_id }}"
