@@ -181,19 +181,19 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }} 
 
-  upload-logs-to-elastic:
-    runs-on: small-runner
-    needs: [ default_build ]
-    if: always()
-    steps:
-    - name: Upload GitHub Action workflows logs to elastic
-      uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
-      with:
-        github_token: "${{ secrets.gh-token-repo-full }}"3
-        github_org: "${{ github.repository_owner }}"
-        github_repository: "${{ github.event.repository.name }}"
-        github_run_id: "${{ github.run_id }}"
-        elastic_host: "${{ secrets.elastic-host }}"
-        elastic_api_key_id: "${{ secrets.elastic-key-id }}"
-        elastic_api_key: "${{ secrets.elastic-api-key }}"
-        elastic_index: "${{ inputs.ELASTIC_INDEX }}"
+  # upload-logs-to-elastic:
+  #   runs-on: small-runner
+  #   needs: [ default_build ]
+  #   if: always()
+  #   steps:
+  #   - name: Upload GitHub Action workflows logs to elastic
+  #     uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
+  #     with:
+  #       github_token: "${{ secrets.gh-token-repo-full }}"
+  #       github_org: "${{ github.repository_owner }}"
+  #       github_repository: "${{ github.event.repository.name }}"
+  #       github_run_id: "${{ github.run_id }}"
+  #       elastic_host: "${{ secrets.elastic-host }}"
+  #       elastic_api_key_id: "${{ secrets.elastic-key-id }}"
+  #       elastic_api_key: "${{ secrets.elastic-api-key }}"
+  #       elastic_index: "${{ inputs.ELASTIC_INDEX }}"
