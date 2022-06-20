@@ -171,7 +171,7 @@ jobs:
       with:
         github_token: "${{ secrets.gh-token-repo-full }}"
         github_org: "${{ github.repository_owner }}"
-        github_repository: "${{ github.event.repository.name }}."
+        github_repository: "${{ github.event.repository.name }}"
         github_run_id: "${{ github.run_id }}"
         elastic_host: "${{ secrets.elastic-host }}"
         elastic_api_key_id: "${{ secrets.elastic-key-id }}"
