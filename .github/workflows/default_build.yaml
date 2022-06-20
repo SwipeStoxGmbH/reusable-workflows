@@ -123,7 +123,7 @@ jobs:
       uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
       with:
         github_token: "${{ secrets.GH_TOKEN_REPO_FULL }}"
-        github_org: "${{ github.event.repository.owner }}"
+        github_org: "${{ github.repository_owner }}"
         github_repository: "${{ github.event.repository.name }}."
         github_run_id: "${{ github.run_id }}"
         elastic_host: "${{ secrets.DEV_ELASTIC_HOST }}"
