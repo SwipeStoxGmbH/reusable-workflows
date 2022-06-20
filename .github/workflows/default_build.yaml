@@ -73,6 +73,7 @@ jobs:
               - Actor: ${{ env.GITHUB_ACTOR }}
               - Job URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             color: 0037FF
+            SLACK_BOT_TOKEN: ${{ secrets.slack-bot-token }}
           attempt_limit: 3
           attempt_delay: 2000
         env:
