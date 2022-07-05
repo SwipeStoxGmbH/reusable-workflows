@@ -27,8 +27,6 @@ on:
         required: true
       aws-secret-access-key:
         required: true
-      gh-token-repo-full:
-        required: true
       aws-region:
         required: true
       elastic-host:
