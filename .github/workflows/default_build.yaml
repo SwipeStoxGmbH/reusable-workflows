@@ -41,6 +41,10 @@ on:
         required: true
       elastic-api-key:
         required: true
+      dockerhub-username:
+        required: true
+      dockerhub-token:
+        required: true
         
 jobs:
   default_build:

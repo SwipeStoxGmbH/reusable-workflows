@@ -35,6 +35,10 @@ on:
     secrets:
       slack-bot-token:
         required: true
+      dockerhub-username:
+        required: true
+      dockerhub-token:
+        required: true
 
 
 jobs:

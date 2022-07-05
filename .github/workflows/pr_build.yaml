@@ -29,6 +29,10 @@ on:
         required: true
       aws-region:
         required: true
+      dockerhub-username:
+        required: true
+      dockerhub-token:
+        required: true
         
 jobs:
   pr_build:
