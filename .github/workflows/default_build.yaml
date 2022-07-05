@@ -29,12 +29,6 @@ on:
         required: true
       aws-region:
         required: true
-      elastic-host:
-        required: true
-      elastic-key-id:
-        required: true
-      elastic-api-key:
-        required: true
       dockerhub-username:
         required: true
       dockerhub-token:
