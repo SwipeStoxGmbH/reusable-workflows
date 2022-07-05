@@ -40,7 +40,6 @@ jobs:
     outputs:
       TAG: ${{ env.TAG }}
       GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-      ELASTIC_HOST: ${{ env.ELASTIC_HOST }}
 
     steps:
       - name: Set environment variables
