@@ -18,9 +18,9 @@ on:
       gh-token:
         required: true
       dockerhub-username:
-        required: false
+        required: true
       dockerhub-token:
-        required: false
+        required: true
 
 jobs:  
   git_tag:
